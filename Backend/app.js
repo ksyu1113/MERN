@@ -1,16 +1,20 @@
+require("dotenv").config();
 const express = require("express");
-const standardErrorHandler = require("./utility/StandardErrorHandler");
 const app = express();
-const port = 8080;
+const standardErrorHandler = require("./utility/StandardErrorHandler");
+const port = process.env.PORT || 8080;
 
-app.get("/", async (req, res, next) => {
-  try {
-    const name = user.name;
-  } catch (error) {
-    console.log(error);
-    return next(error);
-  }
-});
+const connectDB = require("./config/database");
+
+connectDB();
+
+const productRoute = require("./routes/productRoutes.js");
+const userRoute = require("./routes/userRoutes");
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/", userRoute);
+app.use("/", productRoute);
 
 app.use(standardErrorHandler);
 

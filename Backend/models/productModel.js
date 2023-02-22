@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
-const {Schema} = mongoose;
+const { Schema } = mongoose;
 
-const productSchema = new Schema({
+const productSchema = new Schema(
+  {
     productName: {
       type: String,
       minlength: 5,
@@ -55,7 +56,7 @@ const productSchema = new Schema({
       {
         public_id: {
           type: String,
-          // required: true,    not sure about this 
+          // required: true,    not sure about this
         },
         url: {
           type: String,
@@ -63,26 +64,8 @@ const productSchema = new Schema({
         },
       },
     ],
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-  });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  },
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("Product", productSchema);
