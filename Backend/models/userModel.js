@@ -53,6 +53,14 @@ const userSchema = new Schema(
       type: Date,
       require: true,
     },
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -65,26 +73,41 @@ userSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-userSchema.methods.getSignedJwtToken = function () {
+userSchema.methods.generateAuthToken = async function () {
+  const user = this;
+
   let payload = {
     id: this._id,
-    email: this.email,
     username: this.username,
+    email: this.email,
+    contactNo: this.contactNo,
     firstName: this.firstName,
     lastName: this.lastName,
+    gender: this.gender,
+    DOB: this.DOB,
   };
-  return jwt.sign(payload, process.env.JWT_SECRET, {
+  const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
   });
+  user.tokens = user.tokens.concat({ token });
+
+  return token;
 };
 
-userSchema.methods.generatePasswordReset = function () {
-  this.resetPasswordToken = crypto.randomBytes(20).toString("hex");
-  this.resetPasswordExpires = Date.now() + 3600000; //expires in an hour
+userSchema.methods.generateBcrypt = async function () {
+  const user = this;
+  const salt = await bcrypt.genSalt(10);
+  const hashValue = await bcrypt.hash(user.password, salt);
+  return hashValue;
 };
 
 userSchema.methods.comparePassword = async function (password) {
-  return await bcrypt.compare(password, this.password);
+  const comparedPassword = await bcrypt.compare(password, this.password);
+  if (comparedPassword) {
+    return comparedPassword;
+  } else {
+    return null;
+  }
 };
 
 module.exports = mongoose.model("User", userSchema);

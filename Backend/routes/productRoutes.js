@@ -12,7 +12,7 @@ router.get("/test", (req, res) => {
   }
 });
 
-router.get("/", (req, res) => {
+router.get("/product/getall", (req, res) => {
   product
     .find()
     .then((product) => res.json(product))
@@ -21,7 +21,7 @@ router.get("/", (req, res) => {
     );
 });
 
-router.get("/:id", (req, res) => {
+router.get("/product/getone/:id", (req, res) => {
   product
     .findById(req.params.id)
     .then((product) => res.json(product))
@@ -30,8 +30,10 @@ router.get("/:id", (req, res) => {
     );
 });
 
-router.post("/", auth, (req, res) => {
-  console.log(req.body);
+router.post("/product/create", auth, (req, res) => {
+  if (auth) {
+    console.log(req.body);
+  }
   product
     .create(req.body)
     .then((product) => res.json({ msg: "product added" }))
@@ -41,7 +43,7 @@ router.post("/", auth, (req, res) => {
     });
 });
 
-router.put("/:id", auth, (req, res) => {
+router.put("/product/update/:id", auth, (req, res) => {
   product
     .findByIdAndUpdate(req.params.id, req.body)
     .then((product) => res.json({ msg: "Updated" }))
@@ -50,7 +52,7 @@ router.put("/:id", auth, (req, res) => {
     );
 });
 
-router.delete("/:id", auth, (req, res) => {
+router.delete("/product/delete/:id", auth, (req, res) => {
   product
     .findByIdAndRemove(req.params.id, req.body)
     .then((product) => res.json({ mgs: "product deleted" }))

@@ -11,11 +11,21 @@ app.use(express.urlencoded({ extended: true }));
 
 router.post("/user/register", async (req, res) => {
   try {
-    let { username, password, email, contactNo, firstName, lastName, DOB } =
-      req.body;
+    let {
+      username,
+      password,
+      email,
+      contactNo,
+      firstName,
+      lastName,
+      gender,
+      DOB,
+    } = req.body;
     let user = await User.findOne({ username });
     if (user) {
-      return res.status(400).json({ msg: "username already exists" });
+      return res
+        .status(400)
+        .json({ msg: "registration fail, username already exists" });
     }
     user = new User({
       username,
@@ -24,29 +34,15 @@ router.post("/user/register", async (req, res) => {
       contactNo,
       firstName,
       lastName,
+      gender,
       DOB,
     });
 
-    const salt = await bcrypt.genSalt(10);
-    const hashValue = await bcrypt.hash(password, salt);
-    this.password = hashValue;
+    const token = await user.generateAuthToken();
+    this.password = await user.generateBcrypt();
     await user.save();
 
-    const payload = {
-      user: {
-        id: user.id,
-      },
-    };
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: "1day" },
-      (err, token) => {
-        if (err) throw err;
-        res.json({ token });
-      }
-    );
-    return res.send(user);
+    return res.send({ user });
   } catch (err) {
     console.log(err.name);
     console.log(err.message);
@@ -64,29 +60,12 @@ router.post("/user/login", async (req, res) => {
     }
 
     const isMatch = await user.comparePassword(password);
+
     if (!isMatch) {
       return res.status(400).json({ msg: "on99 invalid password" });
     } else {
-      
-      return res.json({ msg: "login success" });
+      return res.json({ msg: "login success", user });
     }
-
-    const payload = {
-      user: {
-        id: user.id,
-      },
-    };
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: "1day" },
-      (err, token) => {
-        if (err) throw err;
-        res.json({ json });
-      }
-    );
-
-
   } catch (err) {
     console.log(err.name);
     console.log(err.message);
