@@ -85,6 +85,7 @@ userSchema.methods.generateAuthToken = async function () {
     lastName: this.lastName,
     gender: this.gender,
     DOB: this.DOB,
+    tokens: this.tokens,
   };
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,

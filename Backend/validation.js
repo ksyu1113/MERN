@@ -36,7 +36,7 @@ const loginValidation = (data) => {
 const productValidation = (data) => {
   const schema = Joi.object({
     productName: Joi.string().min(5).required(),
-    description: Joi.string().min(50).required(),
+    description: Joi.string().min(5).required(),
     category: Joi.string()
       .valid(
         "Antiques",

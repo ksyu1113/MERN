@@ -11,7 +11,7 @@ const productSchema = new Schema(
     },
     description: {
       type: String,
-      minlength: [50, "please enter at least 50words"],
+      minlength: [5, "please enter at least 50words"],
       required: [true, "Please enter product Description"],
     },
     category: {

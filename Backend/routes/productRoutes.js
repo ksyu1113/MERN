@@ -30,17 +30,29 @@ router.get("/product/getone/:id", (req, res) => {
     );
 });
 
-router.post("/product/create", auth, (req, res) => {
-  if (auth) {
-    console.log(req.body);
-  }
-  product
-    .create(req.body)
-    .then((product) => res.json({ msg: "product added" }))
-    .catch((err) => {
-      res.send(err.message);
-      // res.status(400).json({ error: "Unable to add to database" });
+router.post("/product/create", auth, async (req, res) => {
+  try {
+    let { productName, description, category, price, condition } = req.body;
+    let newProduct = new product({
+      productName,
+      description,
+      category,
+      price,
+      condition,
     });
+    let savedProduct = await newProduct.save();
+    return res.json(savedProduct);
+  } catch (e) {
+    return res.json(e.name + e.message);
+  }
+
+  // product
+  //   .save(req.body)
+  //   .then((product) => res.json(product))
+  //   .catch((err) => {
+  //     res.send(err.message);
+  //     // res.status(400).json({ error: "Unable to add to database" });
+  //   });
 });
 
 router.put("/product/update/:id", auth, (req, res) => {
