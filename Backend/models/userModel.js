@@ -17,7 +17,7 @@ const userSchema = new Schema(
     password: {
       type: String,
       minlength: 6,
-      maxlength: 50,
+      // maxlength: 50,
       require: [true, "please enter at least 8 characters"],
     },
     email: {
@@ -85,7 +85,7 @@ userSchema.methods.generateAuthToken = async function () {
     lastName: this.lastName,
     gender: this.gender,
     DOB: this.DOB,
-    tokens: this.tokens,
+    // tokens: this.tokens,   should not add token to payload? 
   };
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
@@ -110,5 +110,6 @@ userSchema.methods.comparePassword = async function (password) {
     return null;
   }
 };
+
 
 module.exports = mongoose.model("User", userSchema);

@@ -17,6 +17,7 @@
     "express-router": "^0.0.1",
     "install": "^0.13.0",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^6.9.2"
+    "mongoose": "^6.9.2",
+    "nodemailer": "^6.9.1"
   }
 }
