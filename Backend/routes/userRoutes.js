@@ -6,7 +6,7 @@ const auth = require("../middleware/auth");
 const sendingOut = require("../utility/sendEmail");
 const Token = require("../models/resetPasswordModel");
 const crypto = require("crypto");
-const { token } = require("morgan");
+const { token } = require("../models/resetPasswordModel");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -112,7 +112,6 @@ router.post("/resetPassword/:userId/:token", async (req, res) => {
       token: req.params.token,
     });
 
-
     if (!token)
       return res.status(400).json({ message: "invalid or expired link" });
 
@@ -120,13 +119,12 @@ router.post("/resetPassword/:userId/:token", async (req, res) => {
     await user.save();
     await token.delete();
     return res.json({ message: "reset password success" });
-    
   } catch (error) {
     return res.status(500).json({ message: "reset password error" });
   }
 });
 
-router.get("/getAll", async (req, res) => {
+router.get("/getAllInfo", async (req, res) => {
   try {
     const user = await User.find().select("-password");
     res.status(200).json({ user });
@@ -137,7 +135,7 @@ router.get("/getAll", async (req, res) => {
   }
 });
 
-router.get("/info", auth, async (req, res) => {
+router.get("/getOneInfo", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password"); //exclude password
     res.status(200).json({ user });
@@ -160,7 +158,7 @@ router.post("/logout", auth, async (req, res) => {
 
     // await req.user.save();
 
-    res.status(200).json({ message: "really logout success" });
+    res.status(200).json({ message: "logout success" });
   } catch (error) {
     res.status(500).json({ message: "server error when logging out" });
   }

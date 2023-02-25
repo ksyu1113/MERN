@@ -16,7 +16,7 @@ const sendingOut = async (email, link) => {
     await transporter.sendMail({
       from: process.env.GMAILACC,
       to: email,
-      subject: "Auto-generated email, please do not reply",
+      subject: "Please reset your password by clicking below link ",
       text: link,
     });
 
